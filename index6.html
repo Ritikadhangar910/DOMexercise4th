@@ -47,6 +47,7 @@
   </body>
   <script>
     const btn = document.getElementsByClassName("btn");
+
     btn[0].addEventListener("click", (e) => {
       e.preventDefault();
       let myname = document.getElementById("name").value;
@@ -57,9 +58,19 @@
       };
       localStorage.setItem(email, JSON.stringify(obj));
       const lielem = document.createElement("li");
-      lielem.textContent = `${myname} - ${email}`;
-      let row = document.getElementsByClassName("container");
-      row[0].append(lielem);
+      lielem.innerHTML = `${myname} - ${email}    
+       <button type="submit" class="btn btn-danger delete">delete</button>`;
+
+      let container = document.getElementsByClassName("container");
+      container[0].append(lielem);
+
+      document
+        .getElementsByClassName("delete")[0]
+        .addEventListener("click", (e) => {
+          let liparent = e.target.parentNode;
+          localStorage.removeItem(email);
+          container[0].removeChild(liparent);
+        });
     });
   </script>
 </html>
