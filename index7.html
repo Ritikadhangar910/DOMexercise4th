@@ -71,6 +71,15 @@
         container[0].removeChild(lielem);
       };
       lielem.appendChild(deltebtn);
+      const editbtn = document.createElement("input");
+      editbtn.type = "button";
+      editbtn.value = "edit";
+      editbtn.onclick = () => {
+        localStorage.removeItem(obj.email);
+        document.getElementById("name").value = obj.myname;
+        document.getElementById("exampleInputEmail1").value = obj.email;
+      };
+      lielem.appendChild(editbtn);
       container[0].append(lielem);
     });
   </script>
