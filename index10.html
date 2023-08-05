@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    const posts = [];
+    async function createPost() {
+      return await new Promise((res, rej) => {
+        setTimeout(() => {
+          posts.push({ title: "newpost" });
+          res(posts[0]);
+        }, 1000);
+      });
+    }
+
+    async function updatelastUserActivityTime() {
+      return await new Promise((res, rej) => {
+        setTimeout(() => {
+          let d = new Date();
+          let time = d.getTime();
+          res(time);
+        }, 1000);
+      });
+    }
+
+    async function deletePost() {
+      return await new Promise((res, rej) => {
+        setTimeout(() => {
+          if (posts.length > 0) {
+            const popElem = posts.pop();
+            res(popElem);
+          } else {
+            rej("ERROR");
+          }
+        }, 1000);
+      });
+    }
+
+    // Promise.all([createPost(), updatelastUserActivityTime()])
+    //   .then((values) => {
+    //     console.log(values);
+    //     return deletePost();
+    //   })
+    //   .then((value) => {
+    //     console.log(value);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    async function resolveusingAsync() {
+      try {
+        let promise = await Promise.all([
+          createPost(),
+          updatelastUserActivityTime(),
+        ]);
+        console.log(promise);
+        let deleteP = await deletePost();
+        console.log(deleteP);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    resolveusingAsync();
+  </script>
+</html>
