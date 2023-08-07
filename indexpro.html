@@ -64,18 +64,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 
   <script>
-    axios
-      .get("https://crudcrud.com/api/9daf13526eb341d4874274fd9c6df42c/mydata")
-      .then((res) => {
-        const datas = res.data;
-        for (const data of datas) {
-          showinli(data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        document.body.innerHTML += `<h2>Error Found</h2>`;
-      });
+    window.addEventListener("DOMContentLoaded", () => {
+      axios
+        .get("https://crudcrud.com/api/9daf13526eb341d4874274fd9c6df42c/mydata")
+        .then((res) => {
+          const datas = res.data;
+          for (const data of datas) {
+            showinli(data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          document.body.innerHTML += `<h2>Error Found</h2>`;
+        });
+    });
 
     let btn = document.getElementById("btn");
     btn.addEventListener("click", (e) => {
