@@ -22,39 +22,29 @@
       <h1>Fill form</h1>
       <form id="form">
         <div class="form-group row">
-          <label for="expense" class="col-sm-3 col-form-label"
-            >Choose Expense</label
-          >
+          <label for="expense" class="col-sm-3 col-form-label">Name</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="expense" />
           </div>
         </div>
         <div class="form-group row">
-          <label for="discription" class="col-sm-3 col-form-label"
-            >Choose description</label
-          >
+          <label for="discription" class="col-sm-3 col-form-label">Email</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="discription" />
+            <input type="email" class="form-control" id="discription" />
           </div>
         </div>
         <div class="form-group row">
           <label for="inputState" class="col-sm-3 col-form-label"
-            >Choose Category</label
+            >Phone Number</label
           >
           <div class="col-sm-8">
-            <select id="inputState" class="form-control">
-              <option selected>Choose...</option>
-              <option>Movie</option>
-              <option>Picnic</option>
-              <option>Shopping</option>
-              <option>Food</option>
-            </select>
+            <input type="text" class="form-control" id="inputState" />
           </div>
         </div>
         <div class="form-group row">
           <div class="col-sm-10">
             <button type="submit" class="btn btn-primary" id="btn">
-              Add Expense
+              Summit
             </button>
           </div>
         </div>
@@ -71,12 +61,21 @@
       crossorigin="anonymous"
     ></script>
   </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
   <script>
-    const keys = Object.keys(localStorage);
-    for (const key of keys) {
-      let item = JSON.parse(localStorage.getItem(key));
-      showinli(item);
-    }
+    axios
+      .get("https://crudcrud.com/api/9daf13526eb341d4874274fd9c6df42c/mydata")
+      .then((res) => {
+        const datas = res.data;
+        for (const data of datas) {
+          showinli(data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        document.body.innerHTML += `<h2>Error Found</h2>`;
+      });
 
     let btn = document.getElementById("btn");
     btn.addEventListener("click", (e) => {
@@ -89,10 +88,19 @@
         description: valdesp,
         catory: valcato,
       };
-      localStorage.setItem(valdesp, JSON.stringify(obj));
-      let items = localStorage.getItem(valdesp);
-      let myobj = JSON.parse(items);
-      showinli(myobj);
+      axios
+        .post(
+          "https://crudcrud.com/api/9daf13526eb341d4874274fd9c6df42c/mydata",
+          obj
+        )
+        .then((res) => {
+          showinli(res.data);
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          document.body.innerHTML += `<h2>Error Found</h2>`;
+        });
     });
 
     function showinli(myobj) {
@@ -109,12 +117,10 @@
       lielem.appendChild(editbtn);
       delbtn.addEventListener("click", (e) => {
         e.preventDefault();
-        localStorage.removeItem(myobj.description);
         form.removeChild(lielem);
       });
       editbtn.addEventListener("click", (e) => {
         e.preventDefault();
-        localStorage.removeItem(myobj.description);
         form.removeChild(lielem);
         document.getElementById("expense").value = myobj.expense;
         document.getElementById("discription").value = myobj.description;
