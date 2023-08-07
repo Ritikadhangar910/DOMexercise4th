@@ -64,9 +64,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", (e) => {
+      e.preventDefault();
       axios
-        .get("https://crudcrud.com/api/9daf13526eb341d4874274fd9c6df42c/mydata")
+        .get("https://crudcrud.com/api/0a0eb1e5cfd14be690342abfc53bb64b/mydata")
         .then((res) => {
           const datas = res.data;
           for (const data of datas) {
@@ -92,7 +93,7 @@
       };
       axios
         .post(
-          "https://crudcrud.com/api/9daf13526eb341d4874274fd9c6df42c/mydata",
+          "https://crudcrud.com/api/0a0eb1e5cfd14be690342abfc53bb64b/mydata",
           obj
         )
         .then((res) => {
@@ -108,6 +109,7 @@
     function showinli(myobj) {
       const lielem = document.createElement("li");
       lielem.textContent = `${myobj.expense} ${myobj.description} ${myobj.catory}`;
+      lielem.setAttribute("id", `${myobj._id}`);
       const form = document.getElementById("form");
       const delbtn = document.createElement("button");
       delbtn.textContent = "delete";
@@ -117,9 +119,23 @@
       editbtn.style.marginLeft = "5px";
       lielem.appendChild(delbtn);
       lielem.appendChild(editbtn);
+      function removeElem(param) {
+        const getid = document.getElementById(param);
+        form.removeChild(getid);
+      }
       delbtn.addEventListener("click", (e) => {
         e.preventDefault();
-        form.removeChild(lielem);
+        // console.log(myobj._id);
+        axios
+          .delete(
+            `https://crudcrud.com/api/0a0eb1e5cfd14be690342abfc53bb64b/mydata/${myobj._id}`
+          )
+          .then((res) => {
+            removeElem(myobj._id);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       });
       editbtn.addEventListener("click", (e) => {
         e.preventDefault();
