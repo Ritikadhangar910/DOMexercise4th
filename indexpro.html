@@ -67,7 +67,7 @@
     window.addEventListener("DOMContentLoaded", (e) => {
       e.preventDefault();
       axios
-        .get("https://crudcrud.com/api/0a0eb1e5cfd14be690342abfc53bb64b/mydata")
+        .get("https://crudcrud.com/api/0efad11b9aab49e7a2e3c614b6981edf/mydata")
         .then((res) => {
           const datas = res.data;
           for (const data of datas) {
@@ -93,7 +93,7 @@
       };
       axios
         .post(
-          "https://crudcrud.com/api/0a0eb1e5cfd14be690342abfc53bb64b/mydata",
+          "https://crudcrud.com/api/0efad11b9aab49e7a2e3c614b6981edf/mydata",
           obj
         )
         .then((res) => {
@@ -108,43 +108,44 @@
 
     function showinli(myobj) {
       const lielem = document.createElement("li");
-      lielem.textContent = `${myobj.expense} ${myobj.description} ${myobj.catory}`;
+      lielem.innerHTML = `${myobj.expense} ${myobj.description} ${myobj.catory}
+      <button  class="ml-2" onclick="deleteli('${myobj._id}')">
+              delete
+      </button>
+      <button class="ml-2" onclick="editli('${myobj._id}','${myobj.expense}','${myobj.description}','${myobj.catory}')">
+              edit
+      </button>
+            `;
+      lielem.setAttribute("class", `${myobj._id}`);
       lielem.setAttribute("id", `${myobj._id}`);
       const form = document.getElementById("form");
-      const delbtn = document.createElement("button");
-      delbtn.textContent = "delete";
-      delbtn.style.marginLeft = "5px";
-      const editbtn = document.createElement("button");
-      editbtn.textContent = "edit";
-      editbtn.style.marginLeft = "5px";
-      lielem.appendChild(delbtn);
-      lielem.appendChild(editbtn);
-      function removeElem(param) {
-        const getid = document.getElementById(param);
-        form.removeChild(getid);
-      }
-      delbtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        // console.log(myobj._id);
-        axios
-          .delete(
-            `https://crudcrud.com/api/0a0eb1e5cfd14be690342abfc53bb64b/mydata/${myobj._id}`
-          )
-          .then((res) => {
-            removeElem(myobj._id);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
-      editbtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        form.removeChild(lielem);
-        document.getElementById("expense").value = myobj.expense;
-        document.getElementById("discription").value = myobj.description;
-        document.getElementById("inputState").value = myobj.catory;
-      });
       form.appendChild(lielem);
+    }
+    function removeElem(param) {
+      event.preventDefault();
+      const getid = document.getElementById(param);
+      form.removeChild(getid);
+    }
+    function deleteli(param) {
+      event.preventDefault();
+      axios
+        .delete(
+          `https://crudcrud.com/api/0efad11b9aab49e7a2e3c614b6981edf/mydata/${param}`
+        )
+        .then((res) => {
+          removeElem(param);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    function editli(id, name, email, num) {
+      event.preventDefault();
+      deleteli(id);
+      document.getElementById("expense").value = name;
+      document.getElementById("discription").value = email;
+      document.getElementById("inputState").value = num;
     }
   </script>
 </html>
