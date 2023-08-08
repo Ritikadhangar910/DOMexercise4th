@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <title>Candy project</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h3>Buy and Sell Chocolate Candy</h3>
+          <form id="form">
+            <div class="row mt-4">
+              <div class="col">
+                <input
+                  id="candyname"
+                  type="text"
+                  class="form-control"
+                  placeholder="Candy Name"
+                />
+              </div>
+              <div class="col">
+                <input
+                  id="discription"
+                  type="text"
+                  class="form-control"
+                  placeholder="Discription"
+                />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <input
+                  type="text"
+                  id="price"
+                  class="form-control"
+                  placeholder="Price"
+                />
+              </div>
+              <div class="col">
+                <input
+                  type="text"
+                  id="quanity"
+                  class="form-control"
+                  placeholder="Quanity"
+                />
+              </div>
+            </div>
+            <button type="submit" id="btnsum" class="btn btn-primary mt-3">
+              Add Candy
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+  </body>
+  <script>
+    axios
+      .get(
+        "https://crudcrud.com/api/d285fa176166483bbeaadd6f23b4f0c6/candydata"
+      )
+      .then((res) => {
+        let datas = res.data;
+        for (const data of datas) {
+          showdata(data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    let btn = document.getElementById("btnsum");
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      let candyname = document.getElementById("candyname").value;
+      let discription = document.getElementById("discription").value;
+      let price = document.getElementById("price").value;
+      let quanity = document.getElementById("quanity").value;
+      const obj = {
+        candyname: candyname,
+        discription: discription,
+        price: price,
+        quanity: quanity,
+      };
+      axios
+        .post(
+          "https://crudcrud.com/api/d285fa176166483bbeaadd6f23b4f0c6/candydata",
+          obj
+        )
+        .then((res) => {
+          showdata(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+    function showdata(res) {
+      let lielem = document.createElement("li");
+      lielem.setAttribute("class", "mt-2");
+      lielem.setAttribute("id", "lielem");
+      lielem.innerHTML = `<p id='${res._id}' class="d-inline"> ${
+        res.candyname
+      } ${res.discription} ${res.price} ${res.quanity}
+          <p/>
+        <button class="ml-3" onclick="reduceCount('${1}','${res._id}','${
+        res.candyname
+      }','${res.discription}','${res.price}',${res.quanity})">
+            Buy1
+        </button>
+
+        <button class="ml-3" onclick="reduceCount('${2}','${res._id}','${
+        res.candyname
+      }','${res.discription}','${res.price}',${res.quanity})">
+            Buy2
+        </button>
+
+        <button class="ml-3" onclick="reduceCount('${3}','${res._id}','${
+        res.candyname
+      }','${res.discription}','${res.price}',${res.quanity})">
+            Buy3
+        </button>`;
+      const form = document.getElementById("form");
+      form.appendChild(lielem);
+    }
+
+    function reduceCount(count, id, candydata, discription, price, quanity) {
+      event.preventDefault();
+      if (quanity - count < 0) {
+        alert(`can't buy  there is only ${quanity} candy left`);
+      } else {
+        axios
+          .put(
+            `https://crudcrud.com/api/d285fa176166483bbeaadd6f23b4f0c6/candydata/${id}`,
+            {
+              candyname: candydata,
+              discription: discription,
+              price: price,
+              quanity: `${quanity - count}`,
+            }
+          )
+          .then((res) => {
+            let obj = JSON.parse(res.config.data);
+            console.log(obj);
+            const p = document.getElementById(`${id}`);
+            if (p) {
+              p.textContent = `${obj.candyname} ${obj.discription} ${obj.price} ${obj.quanity}`;
+            }
+          })
+          .catch((err) => {
+            console.log(err.status);
+          });
+      }
+    }
+  </script>
+</html>
